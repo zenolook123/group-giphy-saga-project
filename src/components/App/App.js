@@ -6,21 +6,9 @@ import { useDispatch } from 'react-redux';
 
 function App(props) {
 
-
 useEffect(() => {
   dispatchEvent({ type: 'FETCH_GIFS' })
 })
-
-function* fetchGifs(action) {
-  try {
-    const fetchresponse = yield axios.get('/')
-    // put = dispatch
-    yield put ({ type: ''})
-  } catch (error) {
-
-  }
-}
-
 
   return (
     <div>
