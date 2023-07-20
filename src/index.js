@@ -12,7 +12,7 @@ import createSagaMiddleware from "@redux-saga/core";
 
 const giphyList = (state = [], action) => {
   switch (action.type) {
-    case "SET_GIPHY":
+    case "SET_GIPHYLIST":
       return action.payload;
     default:
       return state;
@@ -20,9 +20,22 @@ const giphyList = (state = [], action) => {
 };
 // Create the rootSaga generator function
 function* rootSaga() {
+    yield takeLatest('FETCH_GIFS', fetchGifs)
     yield takeLatest('UPDATE_GIPHY',updateElementGiphy);
-    
 }
+
+// Fetch gifs from search DB
+function* fetchGifs(action) {
+    try {
+      const fetchresponse = yield axios.get('/api/category')
+      // put = dispatch
+      yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse })
+    } catch (error) {
+      console.log('Error fetching gifs')
+    }
+  }
+
+// UPDATE - 
 
 
 // UPDATE - Getting the image they select
@@ -31,13 +44,14 @@ function* updateElementGiphy(action){
         // Get the action and Id in 
         yield axios.put(`/api/favorite/${action.payload}`);
         // Get the Search GET
-        yield put({ type: "SET_GIPHY" });
+        yield put({ type: "SET_GIPHYLIST" });
         // Catch any Errors
       }catch(err){
           console.log('ERRORS in updating Giphy:',err);
       }
 }
 const sagaMiddleware = createSagaMiddleware();
+
 // Store
 const store = createStore(
   combineReducers({
@@ -48,6 +62,7 @@ const store = createStore(
 );
 // Pass rootSaga into our sagaMiddleware
 sagaMiddleware.run(rootSaga);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
