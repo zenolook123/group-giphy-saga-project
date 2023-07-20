@@ -18,6 +18,7 @@ const giphyList = (state = [], action) => {
       return state;
   }
 };
+
 // Create the rootSaga generator function
 function* rootSaga() {
     yield takeLatest('FETCH_GIFS', fetchGifs)
