@@ -32,6 +32,13 @@ const favoriteList = (state = [], action) => {
     }
 };
 
+      const currentGifs = (state = [],action)=> {
+  if (action.type === 'SET_GIFS') {
+    return [...state, ...action.payload.data]
+  }
+  return state
+}
+      
 // Create the rootSaga generator function
 function* rootSaga() {
     yield takeLatest('FETCH_GIFS', fetchGifs);
@@ -39,6 +46,8 @@ function* rootSaga() {
     yield takeLatest('ADD_FAVORITE', addFavorite);
 
     yield takeLatest("FETCH_FAVORITES", fetchFavorites);
+  
+    yield takeLatest('SEARCH_GIF', searchGif);
 }
 
 function* addFavorite(action) {
@@ -63,6 +72,18 @@ function* fetchFavorites(action) {
     }
 }
 
+  function* searchGif(action) {
+    try {
+      const gifResults = yield axios.get(`http://api.giphy.com/v1/gifs/search?api_key=mJRxTFHQl2fdUe8UbEtRXPtdgvYi4h4C&q=${action.payload}&limit=5`)
+      yield put ({
+          type:'SET_GIFS', payload:gifResults.data
+      })
+
+    }
+    catch(error) {
+      console.log('error searching gif ', error)
+      
+    
 // Fetch gifs from category DB
 function* fetchGifs(action) {
     try {
@@ -83,7 +104,6 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   combineReducers({
     giphyList,
-    favoriteList
   }),
   // Add sagaMiddleware to our store
   applyMiddleware(sagaMiddleware, logger)

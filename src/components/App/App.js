@@ -1,13 +1,13 @@
 import { React, useEffect } from 'react';
-import { UseSelector } from 'react-redux/es/hooks/useSelector';
 import { useDispatch } from 'react-redux';
 import SearchPage from '../SearchPage/SearchPage';
 
 function App(props) {
     const dispatch = useDispatch();
 
+const dispatch = useDispatch()
+
 useEffect(() => {
-    
   dispatch({ type: 'FETCH_GIFS' })
 })
 
