@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App/App";
 import axios from "axios";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 // Redux
 import { Provider } from "react-redux";
 import logger from "redux-logger";
@@ -19,8 +20,10 @@ const giphyList = (state = [], action) => {
 };
 // Create the rootSaga generator function
 function* rootSaga() {
-    
+
 }
+// UPDATE - 
+
 const sagaMiddleware = createSagaMiddleware();
 // Store
 const store = createStore(
