@@ -63,16 +63,17 @@ function* fetchFavorites(action) {
     }
 }
 
-// Fetch gifs from search DB
+// Fetch gifs from category DB
 function* fetchGifs(action) {
     try {
       const fetchresponse = yield axios.get('/api/category')
       // put = dispatch
       yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse.data })
     } catch (error) {
-      console.log('Error fetching gifs')
+      console.log('Error fetching gifs from category DB')
     }
   }
+
 
 // UPDATE - 
 
