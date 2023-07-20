@@ -20,10 +20,23 @@ const giphyList = (state = [], action) => {
 };
 // Create the rootSaga generator function
 function* rootSaga() {
-
+    yield takeLatest('UPDATE_GIPHY',updateElementGiphy);
+    
 }
-// UPDATE - 
 
+
+// UPDATE - Getting the image they select
+function* updateElementGiphy(action){
+    try {
+        // Get the action and Id in 
+        yield axios.put(`/api/favorite/${action.payload}`);
+        // Get the Search GET
+        yield put({ type: "SET_GIPHY" });
+        // Catch any Errors
+      }catch(err){
+          console.log('ERRORS in updating Giphy:',err);
+      }
+}
 const sagaMiddleware = createSagaMiddleware();
 // Store
 const store = createStore(
