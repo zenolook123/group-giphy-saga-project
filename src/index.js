@@ -12,7 +12,7 @@ import createSagaMiddleware from "@redux-saga/core";
 
 const giphyList = (state = [], action) => {
   switch (action.type) {
-    case "SET_GIPHY":
+    case "SET_GIPHYLIST":
       return action.payload;
     default:
       return state;
@@ -20,11 +20,24 @@ const giphyList = (state = [], action) => {
 };
 // Create the rootSaga generator function
 function* rootSaga() {
-
+    yield takeLatest('FETCH_GIFS', fetchGifs)
 }
+
+// Fetch gifs from search DB
+function* fetchGifs(action) {
+    try {
+      const fetchresponse = yield axios.get('/api/category')
+      // put = dispatch
+      yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse.data })
+    } catch (error) {
+      console.log('Error fetching gifs')
+    }
+  }
+
 // UPDATE - 
 
 const sagaMiddleware = createSagaMiddleware();
+
 // Store
 const store = createStore(
   combineReducers({
@@ -35,6 +48,7 @@ const store = createStore(
 );
 // Pass rootSaga into our sagaMiddleware
 sagaMiddleware.run(rootSaga);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
