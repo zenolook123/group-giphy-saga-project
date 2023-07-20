@@ -26,7 +26,7 @@ function* rootSaga() {
 // Fetch gifs from search DB
 function* fetchGifs(action) {
     try {
-      const fetchresponse = yield axios.get('/')
+      const fetchresponse = yield axios.get('/api/category')
       // put = dispatch
       yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse.data })
     } catch (error) {
