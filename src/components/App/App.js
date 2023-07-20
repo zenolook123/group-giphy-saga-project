@@ -1,7 +1,9 @@
 import { React, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import SearchPage from '../SearchPage/SearchPage';
+
 function App(props) {
+    const dispatch = useDispatch();
 
 const dispatch = useDispatch()
 

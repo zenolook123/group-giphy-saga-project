@@ -19,30 +19,58 @@ const giphyList = (state = [], action) => {
   }
 };
 
+const favoriteList = (state = [], action) => {
+    switch (action.type) {
+        // Case to handle adding a single GIF to the favorites list
+        case "ADD_FAVORITE":
+            return [...state, action.payload];
+        // Case to handle setting the entire favorite list fetched from the API
+        case "SET_FAVORITES":
+            return [action.payload];
+        default:
+            return state;
+    }
+};
 
-const currentGifs = (state = [],action)=> {
+      const currentGifs = (state = [],action)=> {
   if (action.type === 'SET_GIFS') {
     return [...state, ...action.payload.data]
   }
   return state
 }
-
+      
 // Create the rootSaga generator function
 function* rootSaga() {
-    // yield takeLatest('FETCH_GIFS', fetchGifs)
-    yield takeLatest('SEARCH_GIF', searchGif)
+    yield takeLatest('FETCH_GIFS', fetchGifs);
+
+    yield takeLatest('ADD_FAVORITE', addFavorite);
+
+    yield takeLatest("FETCH_FAVORITES", fetchFavorites);
+  
+    yield takeLatest('SEARCH_GIF', searchGif);
 }
 
-// Fetch gifs from search DB
-// function* fetchGifs(action) {
-//     try {
-//       const fetchresponse = yield axios.get('/api/category')
-//       // put = dispatch
-//       yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse})
-//     } catch (error) {
-//       console.log('Error fetching gifs')
-//     }
-//   }
+function* addFavorite(action) {
+    try {
+        yield axios.post("/api/favorite", action.payload);
+        yield put ({ type: "FETCH_FAVORITES" });
+    } catch (error) {
+        console.log("Error with POSTing new favorite gif: ", error);
+    }
+}
+
+function* fetchFavorites(action) {
+    console.log("Fetch favorites was dispatched with the action: ", action)
+    try {
+        // Make API call to get the list of favorites
+        const favoriteResponse = yield axios.get("/api/favorite");
+        console.log("Favorite GIF data: ", favoriteResponse.data);
+        // Dispatch an action to set the fetched favorites in the store
+        yield put({ type: "SET_FAVORITES", payload: favoriteResponse.data});
+    } catch (error) {
+        console.log("Error fetching favorites: ", error);
+    }
+}
 
   function* searchGif(action) {
     try {
@@ -54,8 +82,19 @@ function* rootSaga() {
     }
     catch(error) {
       console.log('error searching gif ', error)
+      
+    
+// Fetch gifs from category DB
+function* fetchGifs(action) {
+    try {
+      const fetchresponse = yield axios.get('/api/category')
+      // put = dispatch
+      yield put ({ type: 'SET_GIPHYLIST', payload: fetchresponse.data })
+    } catch (error) {
+      console.log('Error fetching gifs from category DB')
     }
   }
+
 
 // UPDATE - 
 
@@ -65,7 +104,6 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   combineReducers({
     giphyList,
-    currentGifs
   }),
   // Add sagaMiddleware to our store
   applyMiddleware(sagaMiddleware, logger)

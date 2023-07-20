@@ -37,4 +37,4 @@ const dispatch = useDispatch()
   )
 }
 
-export default SearchPage
+export default SearchPage;
