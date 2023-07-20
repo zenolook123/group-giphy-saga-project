@@ -5,9 +5,10 @@ import { useDispatch } from 'react-redux';
 
 
 function App(props) {
+  const dispatch = useDispatch();
 
 useEffect(() => {
-  dispatchEvent({ type: 'FETCH_GIFS' })
+  dispatch({ type: 'FETCH_GIFS' })
 })
 
   return (
